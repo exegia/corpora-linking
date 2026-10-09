@@ -26,8 +26,8 @@ parser, Supabase, or UI dependencies in this release. Heavy format behavior belo
 to integration tests outside this repository.
 
 The owner created the GitHub repository and reports publishing setup ready.
-The public visibility change is verified. GitHub rejected the connector attempt
-to mark PR #2 ready for review with a permission error; an owner must complete
-that transition before the reviewed release can proceed.
+The public visibility change is verified. The owner marked PR #2 ready and
+merged it into dev. Promotion through next and a reviewed main release remain
+before tagging and publishing.
 No PyPI publication or installed-from-PyPI verification has yet completed.
 See releasing.md for the publication procedure; use Actions trusted publishing.
