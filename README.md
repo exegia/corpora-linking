@@ -4,8 +4,7 @@ A small Python library for linking exact passages across documents and corpora.
 Manual selections and detected citations use the same reference model. Unknown
 works, ambiguous passages and stale anchors stay explicit instead of being guessed.
 
-**Release preparation:** version 0.1.0 is ready for validation but has not been
-published. The installation command below becomes available after its PyPI release.
+Version **0.1.0** is [available on PyPI](https://pypi.org/project/corpora-linking/0.1.0/).
 
 ```bash
 pip install corpora-linking
