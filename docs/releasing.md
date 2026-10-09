@@ -1,9 +1,10 @@
 # Release setup and first publication
 
-This checkout prepares version **0.1.0**. It has not yet been uploaded to PyPI.
+Version **0.1.0** is published on PyPI and its installation is verified.
+See `verification.md` for artifact hashes and checks.
 The repository and public package release have been authorized by the maintainer;
 the public GitHub repository now exists and the initial CI run passed.
-Publishing authentication still needs verification during the first release.
+Trusted publishing succeeded in Actions run 37881455925.
 
 ## One-time owner setup
 
