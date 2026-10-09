@@ -1,0 +1,53 @@
+# The `corpora` CLI itself. The heavy lifting — parsers, Text-Fabric
+# conversion, storage backends — comes from the corpora-py distribution on
+# PyPI (which bundles the admin/common/mcp workspace packages); this package
+# is only the Rich-styled command-line surface over those in-process seams.
+[project]
+name = "corpora-cli"
+description = "Convert documents into queryable .corpus text archives"
+readme = "README.md"
+authors = [{ name = "Emmanuel De Freitas", email = "emmanuel@exegia.co" }]
+requires-python = ">=3.13"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "corpora-py>=2.2.0",
+    "rich>=13.7",
+    "typer>=0.26.8",
+]
+# The repo's VERSION file (bumped by the release lanes) is the package
+# version — one source of truth, see [tool.hatch.version].
+dynamic = ["version"]
+
+[project.scripts]
+corpora = "corpora_cli.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "regex"
+path = "VERSION"
+pattern = "^(?P<version>\\d+\\.\\d+\\.\\d+)"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/corpora_cli"]
+
+[dependency-groups]
+dev = [
+    "fonttools>=4.63.0",
+    "pytest>=8.0",
+    "ruff>=0.8",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B"]
