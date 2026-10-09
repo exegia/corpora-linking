@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 — initial release candidate
+## 0.1.0 — initial release
 
 - Validated stable reference identities, endpoints, provenance and independent states.
 - Typed text, scripture, structural, PDF rectangles/quads, EPUB and HTML locators.
@@ -10,4 +10,4 @@
 - Synthetic examples and independently runnable core regression coverage.
 
 Native format parsing, persistence, authentication and publication adapters are outside
-this package. This candidate has not yet been uploaded to PyPI.
+this package. Version 0.1.0 is published on PyPI.
