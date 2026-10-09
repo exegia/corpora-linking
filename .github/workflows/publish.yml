@@ -1,0 +1,40 @@
+name: Publish
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9
+      - run: uv sync --frozen --python 3.13
+      - name: Validate tag matches package version
+        run: |
+          uv run python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          version = tomllib.loads(Path('pyproject.toml').read_text())['project']['version']
+          assert os.environ['GITHUB_REF_NAME'] == f'v{version}', 'release tag/version mismatch'
+          PY
+      - run: uv run ruff check . && uv run mypy && uv run pytest
+      - run: bash scripts/verify-wheel.sh
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/corpora-linking/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9
+      - run: uv build
+      - run: uv publish --trusted-publishing always

@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [main, dev, next, "feat/**", "release/**"]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - python: '3.13'
+            pydantic: latest
+          - python: '3.14'
+            pydantic: latest
+          - python: '3.13'
+            pydantic: '2.11.0'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9
+      - run: uv sync --frozen --python '${{ matrix.python }}'
+      - if: matrix.pydantic != 'latest'
+        run: uv pip install 'pydantic==${{ matrix.pydantic }}'
+      - run: uv run --no-sync ruff check .
+      - run: uv run --no-sync mypy
+      - run: uv run --no-sync pytest
+      - run: bash scripts/verify-wheel.sh
