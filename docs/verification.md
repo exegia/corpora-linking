@@ -1,30 +1,27 @@
-# Initial release verification
+# Release verification
 
-Version 0.1.0 is a prepared candidate, not a completed PyPI release.
+Version 0.1.0 is published on PyPI. The immutable v0.1.0 tag points to
+496a5caaf84a61b994b2bc4dacd089568e7f0c54. Both verify and publish jobs passed
+in GitHub Actions run 37881455925 using PyPI trusted publishing.
 
-- 65 core tests pass on Python 3.13 with Pydantic 2.14.0.
-- All 65 tests pass against the actual wheel with minimum Pydantic 2.11.0.
-- All 65 tests pass on Python 3.14.7 with the current Pydantic version.
-- Ruff and mypy pass. Core examples are included in type checking.
-- Wheel and sdist build independently with no Corpora workspace dependency.
-- The actual wheel installs in a fresh environment; all tests and all three examples
-  run away from the source checkout. Runtime dependencies are Pydantic and its own
-  dependencies; pytest is installed solely to run checks.
-- Workflow YAML parses, actions use pinned commit hashes, tag/version matching is
-  enforced, and only the publishing job requests an OIDC token. No GitHub Actions
-  run or real publishing authentication has been verified until remote setup exists.
-- The GitHub repository is accessible and contains an initial Homebrew CLI copy.
-  The feature branch replaces that copy with the independently verified core while
-  preserving the remote history. Repository visibility currently reports private.
-- PyPI availability and publisher authentication still require release-time checks.
+Both wheel and source archive are present on PyPI. A fresh Python 3.13
+environment installed corpora-linking==0.1.0 from PyPI with the package cache
+disabled. All 65 portable tests and the three examples passed away from the
+checkout; the import path was inside that environment's site-packages.
 
-The source excludes the monorepo-specific TF adapter test while preserving core
-model assertions. Additional native-value tests cover pinned identity, PDF convexity,
-nonfinite coordinates and native quote-selector serialization. There are no native
-parser, Supabase, or UI dependencies in this release. Heavy format behavior belongs
-to integration tests outside this repository.
+Local checks also passed on Python 3.14.7 and against minimum Pydantic
+2.11.0. Ruff and mypy passed, and wheel/sdist installation was verified.
 
-The owner created the GitHub repository and reports publishing setup ready.
-A public visibility change remains required for the intended open-source release.
-No PyPI publication or installed-from-PyPI verification has yet completed.
-See releasing.md for the publication procedure; use Actions trusted publishing.
+PyPI artifact SHA-256:
+
+- Wheel: 3c4af8ab00ab37176037371411b9ddf46b26b95a7ba148b697bf1a9945f8a98c
+- Source: 5c73905c5692997e40891e151a908fa02d8c6194b2b97ea8f3e1e53fe3d9fa6a
+
+The public repository preserves the initially unrelated dev, next and main
+histories through reviewed promotion/release PRs #2, #3 and #4. No branches
+were reset or force-pushed. No database or service deployment was performed.
+
+Native format parsing, persistence, authentication, and C-USX integration stay
+outside this core. Corpora and Homebrew dependency migration follows this
+verified publication. Release artifacts remain immutable; documentation updates
+do not rebuild or replace version 0.1.0.

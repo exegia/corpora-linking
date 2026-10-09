@@ -1,13 +1,15 @@
 # Release setup and first publication
 
-This checkout prepares version **0.1.0**. It has not yet been uploaded to PyPI.
+Version **0.1.0** is published on PyPI and its installation is verified.
+See `verification.md` for artifact hashes and checks.
 The repository and public package release have been authorized by the maintainer;
-remote creation/publishing are currently blocked by missing platform setup.
+the public GitHub repository now exists and the initial CI run passed.
+Trusted publishing succeeded in Actions run 37881455925.
 
 ## One-time owner setup
 
-1. Create **exegia/corpora-linking** as an empty **public** GitHub repository.
-   Do not initialize it with another README/license; this checkout supplies those.
+1. **exegia/corpora-linking** is now public. Its initial Homebrew CLI scaffold
+   is replaced by this package through a feature PR while preserving history.
 2. Allow the GitHub connector to access the new repository. The connected GitHub
    tools cannot create repositories, and direct api.github.com access is denied
    by this execution environment's proxy policy.
@@ -32,8 +34,11 @@ reservation. Recheck name ownership before release.
 
 ## Release execution after setup
 
-Push the prepared main branch, inspect CI, and verify the exact package version.
-Only then push `v0.1.0`. The tag-triggered publish.yml rechecks tag/version, tests,
+Follow `.github/WORKFLOW.md`: review and merge the feature PR into `dev`,
+promote through `next`, and merge an appropriate release PR into `main`.
+Respect existing branch and tag protections; do not push an unrelated main
+history or force-push. Verify CI and the exact package version on the release
+commit before creating `v0.1.0` with an authorized identity. The tag-triggered publish.yml rechecks tag/version, tests,
 builds and installed-wheel behavior before uploading through GitHub OIDC.
 Do not overwrite the version or reuse a failed release tag for different code.
 If no files reached PyPI a failed workflow can be retried after fixing setup;
