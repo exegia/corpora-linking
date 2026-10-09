@@ -11,11 +11,12 @@ Version 0.1.0 is a prepared candidate, not a completed PyPI release.
   run away from the source checkout. Runtime dependencies are Pydantic and its own
   dependencies; pytest is installed solely to run checks.
 - Workflow YAML parses, actions use pinned commit hashes, tag/version matching is
-  enforced, and only the publishing job requests an OIDC token. No GitHub Actions
-  run or real publishing authentication has been verified until remote setup exists.
+  enforced, and only the publishing job requests an OIDC token. GitHub Actions CI passed for the initial feature commit
+  d126ae22e32e6187174021ff94cfabbfed7db510 (run 37877737824).
+  Real publishing authentication remains unverified.
 - The GitHub repository is accessible and contains an initial Homebrew CLI copy.
   The feature branch replaces that copy with the independently verified core while
-  preserving the remote history. Repository visibility currently reports private.
+  preserving the remote history. Repository visibility is now public.
 - PyPI availability and publisher authentication still require release-time checks.
 
 The source excludes the monorepo-specific TF adapter test while preserving core
@@ -25,6 +26,8 @@ parser, Supabase, or UI dependencies in this release. Heavy format behavior belo
 to integration tests outside this repository.
 
 The owner created the GitHub repository and reports publishing setup ready.
-A public visibility change remains required for the intended open-source release.
+The public visibility change is verified. The owner marked PR #2 ready and
+merged it into dev. Promotion PR #3 passed CI (run 37880606921); its merge and a reviewed main release remain
+before tagging and publishing.
 No PyPI publication or installed-from-PyPI verification has yet completed.
 See releasing.md for the publication procedure; use Actions trusted publishing.
