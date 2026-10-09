@@ -1,0 +1,67 @@
+{
+  "name": "Publishing",
+  "target": "tag",
+  "enforcement": "active",
+  "bypass_actors": [
+    {
+      "actor_id": null,
+      "actor_type": "OrganizationAdmin",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": null,
+      "actor_type": "DeployKey",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 8329,
+      "actor_type": "Integration",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 1143301,
+      "actor_type": "Integration",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 1236702,
+      "actor_type": "Integration",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 4425676,
+      "actor_type": "Integration",
+      "bypass_mode": "always"
+    }
+  ],
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/tags/v*"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "creation"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "required_signatures"
+    }
+  ]
+}

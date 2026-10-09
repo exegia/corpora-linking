@@ -1,0 +1,8 @@
+version: 2
+updates:
+  # The only manifests here are the workflow files — the formula's own
+  # "dependency" (corpora-py) is bumped by bump.yml, not Dependabot.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
