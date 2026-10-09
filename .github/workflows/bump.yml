@@ -1,0 +1,85 @@
+# Bumps Formula/cli.rb to a new corpora-cli release tag.
+#
+# The formula installs this repo's own package (which pulls corpora-py from
+# PyPI as a dependency), so the bump target is a corpora-cli tag, not a
+# corpora-py one. corpora-py releases no longer touch the formula — pip
+# resolves the newest compatible corpora-py from PyPI at install time.
+#
+# Fired two ways:
+#   - repository_dispatch `bump-formula` with client_payload.version — for
+#     automation (the sender must supply a corpora-cli tag version);
+#   - workflow_dispatch with a `version` input, for manual bumps (typically
+#     right after a release here tags vX.Y.Z).
+#
+# The version is the bare X.Y.Z (no leading `v`). The job downloads the
+# corresponding corpora-cli tag tarball, computes its sha256, rewrites the
+# formula's url/sha256 lines, and commits directly to main.
+
+name: Bump formula
+
+on:
+  repository_dispatch:
+    types: [bump-formula]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "corpora-cli version to bump to (X.Y.Z, no leading v)"
+        required: true
+        type: string
+
+# The push runs as the automation App (org secrets AUTOMATION_APP_ID /
+# AUTOMATION_APP_PRIVATE_KEY, visibility: all) — main's ruleset requires
+# PRs + green guard/check, and the App is on its bypass list so the bump
+# commit can land directly. GITHUB_TOKEN would be refused.
+permissions:
+  contents: read
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        id: app-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Resolve version
+        id: version
+        run: |
+          VERSION="${{ github.event_name == 'workflow_dispatch' && inputs.version || github.event.client_payload.version }}"
+          VERSION="${VERSION#v}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::'$VERSION' is not a valid X.Y.Z version" && exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Rewrite formula
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          URL="https://github.com/exegia/homebrew-corpora/archive/refs/tags/v${VERSION}.tar.gz"
+          curl -fsSL "$URL" -o release.tar.gz
+          SHA256=$(sha256sum release.tar.gz | cut -d' ' -f1)
+          sed -i \
+            -e "s|^  url \".*\"$|  url \"${URL}\"|" \
+            -e "s|^  sha256 \".*\"$|  sha256 \"${SHA256}\"|" \
+            Formula/cli.rb
+          rm release.tar.gz
+          git diff --stat -- Formula/cli.rb
+
+      - name: Commit and push
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if git diff --quiet -- Formula/cli.rb; then
+            echo "Formula already at ${VERSION}; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Formula/cli.rb
+          git commit -m "corpora ${VERSION}"
+          git push
